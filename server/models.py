@@ -21,8 +21,10 @@ class Episode(db.Model, SerializerMixin):
     number = db.Column(db.Integer)
 
     # add relationship
-    
-    # add serialization rules
+    appearances = db.relationship("Appearance", cascade="all, delete", backref="episode")
+
+    # add serialization rules (episode or episodes??)
+    serialize_rules = ("-appearances.episode",)
     
 
 class Guest(db.Model, SerializerMixin):
@@ -33,8 +35,10 @@ class Guest(db.Model, SerializerMixin):
     occupation = db.Column(db.String)
 
     # add relationship
+    appearances = db.relationship("Appearance", cascade="all, delete", backref="guest")
     
-    # add serialization rules
+    # add serialization rules (guest or guests??)
+    serialize_rules = ("-appearances.guests",)
     
 
 class Appearance(db.Model, SerializerMixin):
@@ -44,9 +48,17 @@ class Appearance(db.Model, SerializerMixin):
     rating = db.Column(db.Integer)
 
     # add relationships
+    episode_id = db.Column(db.Integer, db.ForeignKey("episodes.id"))
+    guest_id = db.Column(db.Integer, db.ForeignKey("guests.id"))
     
     # add serialization rules
+    serialize_rules = ("-episode.appearances", "-guest.appearances")
     
     # add validation
+    @validates('rating')
+    def validates_rating(self, key, rating):
+        if not 1 <= rating <= 5:
+            raise ValueError("Invalid rating. Please selecting rating 1-5")
+        return rating
     
 # add any models you may need.
