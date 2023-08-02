@@ -23,7 +23,7 @@ class Episode(db.Model, SerializerMixin):
     # add relationship
     appearances = db.relationship("Appearance", cascade="all, delete", backref="episode")
 
-    # add serialization rules (episode or episodes??)
+    # add serialization rules
     serialize_rules = ("-appearances.episode",)
     
 
@@ -37,8 +37,8 @@ class Guest(db.Model, SerializerMixin):
     # add relationship
     appearances = db.relationship("Appearance", cascade="all, delete", backref="guest")
     
-    # add serialization rules (guest or guests??)
-    serialize_rules = ("-appearances.guests",)
+    # add serialization rules
+    serialize_rules = ("-appearances.guest",)
     
 
 class Appearance(db.Model, SerializerMixin):
